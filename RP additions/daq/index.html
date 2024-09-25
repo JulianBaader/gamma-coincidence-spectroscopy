@@ -1,0 +1,53 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>Data acquisition</title>
+<link rel="stylesheet" href="/css/main.css">
+<link rel="stylesheet" href="/css/pygments.css">
+</head>
+<body>
+<div id="header">
+<div id="logo">
+<a href="/">Back to all apps</a>
+</div>
+<div id="menu">
+<a href="https://github.com/pavel-demin/red-pitaya-notes" target="_blank">Source</a>
+<a href="https://github.com/pavel-demin/red-pitaya-notes/issues" target="_blank">Issues</a>
+</div>
+</div>
+<div id="content">
+<h1>Data acquisition</h1>
+<p>The DAQ application is ready.</p>
+<p>Now you can run the control program.</p>
+<p>More details about this application can be found at <a href="https://pavel-demin.github.io/red-pitaya-notes/mcpha/" target="_blank">not yet available link</a>.</p>
+<h2>Getting started</h2>
+<ul>
+<li>Connect a signal source or the OUT1 to the IN1 connector on the Red Pitaya board. </li>
+<li>Additionally you can connect another signal to the IN2 connector.</li>
+<li>Clone the <a href="https://github.com/pavel-demin/red-pitaya-notes/releases/download/20240204/red-pitaya-notes-20240204.zip">not yet available git repo</a>.</li>
+<li>Edit the config to your needs (ip is required). To play around with the values, the <a href="../mcpha">mcpha application</a> might proove useful.</li>
+<li>Run the <code>rpDAQ.py</code> program.</li>
+</ul>
+<h3>Additional Information for developers</h3>
+<ul>
+<li>This is based upon the 20240204 release</li>
+<li>The FPGA Image is the same as the one of the mcpha except the FIR Filter was removed.</li>
+<li>The Server Application is the same as the one of the mcpha except an additional command (31, 0, n) was added which starts the daq thread.</li>
+<li>The DAQ thread waits for the triggerflag and then sends the data, resets and starts the osci n times.</li>
+<li>As the DAQ thread first waits for the triggerflag you need to reset and start the oscilloscope before running the DAQ for the first time.</li>
+</ul>
+<h3>MimoCoRB</h3>
+<ul>
+<li>The Client also offers an interface to <a href="https://github.com/GuenterQuast/mimoCoRB">MimoCoRB</a> which offers a framework for further live analysis.</li>
+</ul>
+<h3>Credit</h3>
+<ul>
+<li>This project is part of a Beachelor Thesis at KIT</li>
+<li>The whole Image is from <a href="https://github.com/pavel-demin/red-pitaya-notes/">Pavel Demin</a></li>
+<li>The client application is inspired by the <a href="https://github.com/MitchiLaser/ymca">ymca</a> by Michael Hohenstein and the <a href="https://github.com/GuenterQuast/redpitaya-daq">redpitaya-daq repo</a>by Prof. Dr. G. Quast</li>
+
+</ul>
+</div>
+</body>
+</html>
