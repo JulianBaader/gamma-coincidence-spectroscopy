@@ -4,6 +4,8 @@ import numpy as np
 
 import time
 
+import mimoCoRB.buffer_control as bc
+
 
 COMMANDS = {
     0: "reset histogram",
@@ -80,7 +82,7 @@ class rpControll:
         self.distribution = None
         self.spectrum = None
 
-        self.events_per_loop = None
+        self.set_size = None
 
         self.requested_count = 0
 
@@ -213,14 +215,17 @@ class rpControll:
 
     def start_oscillocsope(self):
         self.command(19, 0, 0)
+        
+    def set_set_size(self, set_size):
+        self.set_size = set_size
 
-    def acquire_set(self, amount):
-        buffer = np.zeros(amount * 2 * self.total_number_of_samples, dtype=np.int16)
+    def acquire_set(self):
+        buffer = np.zeros(self.set_size * 2 * self.total_number_of_samples, dtype=np.int16)
         view = buffer.view(np.uint8)
-        reshaped = buffer.reshape((2, self.total_number_of_samples, amount), order='F').transpose((2, 0, 1))
-        self.command(31, 0, amount)
+        reshaped = buffer.reshape((2, self.total_number_of_samples, self.set_size), order='F').transpose((2, 0, 1))
+        self.command(31, 0, self.set_size)
 
-        for i in range(amount):
+        for i in range(self.set_size):
             bytes_received = 0
             while bytes_received < self.osc_bytes:
                 bytes_received += self.socket.recv_into(
@@ -233,13 +238,13 @@ class rpControll:
 
         return reshaped
 
-    def acquire_single(self, set_size):
+    def acquire_single(self):
         while True:
             buffer = np.zeros(2 * self.total_number_of_samples, dtype=np.int16)
             view = buffer.view(np.uint8)
             reshaped = buffer.reshape((2, self.total_number_of_samples), order='F')
-            self.command(31, 0, set_size)
-            for i in range(set_size):
+            self.command(31, 0, self.set_size)
+            for i in range(self.set_size):
                 bytes_received = 0
                 while bytes_received < self.osc_bytes:
                     bytes_received += self.socket.recv_into(view[bytes_received:], self.osc_bytes - bytes_received)
@@ -278,47 +283,60 @@ class rpControll:
         self.start_oscillocsope()
 
 
-if __name__ == "__main__":
-    import argparse
-
-    parser = argparse.ArgumentParser(description='Run the DAQ')
-    # Required positional arguments
-    parser.add_argument('ip', type=str, help='IP address of the Red Pitaya')
-    parser.add_argument('mode', type=str, help='Acquisition mode', choices=ACQUISITION_MODES)
-
-    # Optional arguments
-    parser.add_argument('--set_size', type=int, help='Size of one dataset to be acquired', default=1000)
-    parser.add_argument('--sets', type=int, help='Amount of sets to acquire if mode is "process"', default=10)
-    args = parser.parse_args()
-
-    print(f"Connecting to Red Pitaya at {args.ip}")
-
+def redpitaya_to_mimoCoRB(source_list=None, sink_list=None, observe_list=None, config_dict=None, **rb_info):
+    if config_dict is None:
+        raise ValueError("ERROR! No configuration for redpitaya_to_mimoCoRB provided.")
+    
+    # read the configuration
+    """
+    ip: str
+    sample_rate: 4                          # int (see SAMPLE_RATES)
+    negator_IN1: false                      # bool
+    negator_IN2: false                      # bool
+    trigger_source: 'IN1'                   # str (see INPUTS)
+    trigger_slope: 'rising'                 # str (see TRIGGER_SLOPES)
+    trigger_mode: 'normal'                  # str (see TRIGGER_MODES)
+    trigger_level: 100                      # int
+    number_of_samples_before_trigger: 500   # int
+    total_number_of_samples: 1500           # int
+    set_size: 100                           # int
+    """
+    try:
+        ip = config_dict['ip']
+        sample_rate = config_dict['sample_rate']
+        negator_IN1 = config_dict['negator_IN1']
+        negator_IN2 = config_dict['negator_IN2']
+        trigger_source = config_dict['trigger_source']
+        trigger_slope = config_dict['trigger_slope']
+        trigger_mode = config_dict['trigger_mode']
+        trigger_level = config_dict['trigger_level']
+        number_of_samples_before_trigger = config_dict['number_of_samples_before_trigger']
+        total_number_of_samples = config_dict['total_number_of_samples']
+        set_size = config_dict['set_size']
+    except KeyError as e:
+        raise ValueError("ERROR! Missing configuration parameter: " + str(e))
+    
     rp = rpControll()
-    rp.testing_setup(args.ip)
+    rp.connect(ip)
+    rp.set_sample_rate(sample_rate)
+    rp.set_negator(negator_IN1, "IN1")
+    rp.set_negator(negator_IN2, "IN2")
+    rp.set_trigger_source(trigger_source)
+    rp.set_trigger_slope(trigger_slope)
+    rp.set_trigger_mode(trigger_mode)
+    rp.set_trigger_level(trigger_level)
+    rp.set_number_of_samples_before_trigger(number_of_samples_before_trigger)
+    rp.set_total_number_of_samples(total_number_of_samples)
+    rp.set_set_size(set_size)
+    
+    importer = bc.rbImport(sink_list=sink_list, config_dict=config_dict, ufunc=rp.acquire_single, **rb_info)
+    
+    rp.reset_oscilloscope()
+    rp.start_oscillocsope()
+    
+    importer()
+     
+    
 
-    if args.mode == 'save':
-        print("Starting acquisition")
-        start_time = time.time()
-        np.save("data.npy", rp.acquire_set(args.set_size))
-        stop_time = time.time()
-
-        print(f"Acquired {args.set_size} events at an average rate of {args.set_size/(stop_time-start_time)} Hz")
-
-    elif args.mode == 'process':
-        print("Starting processing")
-        import matplotlib.pyplot as plt
-
-        hist = np.zeros(2**13)
-        total_sets = args.set_size * args.sets
-
-        generator = rp.acquire_single(1000)
-
-        start_time = time.time()
-        for i in range(total_sets):
-            hist[np.max(next(generator)[0])] += 1
-        np.save("hist.npy", hist)
-        stop_time = time.time()
-        print(f"Acquired {total_sets} events at an average rate of {total_sets/(stop_time-start_time)} Hz")
-
-        plt.plot(hist)
-        plt.show()
+if __name__ == "__main__":
+    print("This is a mimoCoRB module and is not meant to be run directly.")
