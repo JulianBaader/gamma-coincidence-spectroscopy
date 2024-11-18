@@ -306,12 +306,10 @@ def redpitaya_to_mimoCoRB(source_list=None, sink_list=None, observe_list=None, c
         sample_rate = config_dict['sample_rate']
         negator_IN1 = config_dict['negator_IN1']
         negator_IN2 = config_dict['negator_IN2']
-        trigger_source = config_dict['trigger_source']
         trigger_slope = config_dict['trigger_slope']
         trigger_mode = config_dict['trigger_mode']
         trigger_level = config_dict['trigger_level']
         number_of_samples_before_trigger = config_dict['number_of_samples_before_trigger']
-        total_number_of_samples = config_dict['total_number_of_samples']
         set_size = config_dict['set_size']
     except KeyError as e:
         raise ValueError("ERROR! Missing configuration parameter: " + str(e))
@@ -321,15 +319,25 @@ def redpitaya_to_mimoCoRB(source_list=None, sink_list=None, observe_list=None, c
     rp.set_sample_rate(sample_rate)
     rp.set_negator(negator_IN1, "IN1")
     rp.set_negator(negator_IN2, "IN2")
-    rp.set_trigger_source(trigger_source)
     rp.set_trigger_slope(trigger_slope)
     rp.set_trigger_mode(trigger_mode)
     rp.set_trigger_level(trigger_level)
     rp.set_number_of_samples_before_trigger(number_of_samples_before_trigger)
-    rp.set_total_number_of_samples(total_number_of_samples)
+    
     rp.set_set_size(set_size)
     
     importer = bc.rbImport(sink_list=sink_list, config_dict=config_dict, ufunc=rp.acquire_single, **rb_info)
+    sink_names = [dtype[0] for dtype in importer.sink.dtypes]
+    
+    if sink_names[0] == 'trigger_channel':
+        rp.set_trigger_source("IN1")
+    elif sink_names[1] == 'trigger_channel':
+        rp.set_trigger_source("IN2")
+    else:
+        raise ValueError("ERROR! No trigger_channel in sink_list.")
+    
+    rp.set_total_number_of_samples(importer.sink.values_per_slot)
+    
     
     rp.reset_oscilloscope()
     rp.start_oscillocsope()
