@@ -329,12 +329,14 @@ def redpitaya_to_mimoCoRB(source_list=None, sink_list=None, observe_list=None, c
     importer = bc.rbImport(sink_list=sink_list, config_dict=config_dict, ufunc=rp.acquire_single, **rb_info)
     sink_names = [dtype[0] for dtype in importer.sink.dtypes]
     
-    if sink_names[0] == 'trigger_channel':
+    if len(sink_names) != 2:
+        raise ValueError("ERROR! Redpitaya can only write to two channels")
+    if sink_names == ['trigger_channel', 'coincidence_channel']:
         rp.set_trigger_source("IN1")
-    elif sink_names[1] == 'trigger_channel':
+    elif sink_names == ['coincidence_channel', 'trigger_channel']:
         rp.set_trigger_source("IN2")
     else:
-        raise ValueError("ERROR! No trigger_channel in sink_list.")
+        raise ValueError("ERROR! One buffer of the sink must be denoted as 'trigger_channel' and the other as 'coincidence_channel'")
     
     rp.set_total_number_of_samples(importer.sink.values_per_slot)
     
