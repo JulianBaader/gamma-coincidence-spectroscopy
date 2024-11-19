@@ -1,0 +1,9 @@
+peak_config1:
+  prominence: 200
+  width: 10
+  gradient_min: 0
+
+peak_config2:
+  prominence: 200
+  width: 10
+  gradient_min: 0

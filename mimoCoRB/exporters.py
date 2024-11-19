@@ -1,4 +1,4 @@
-from mimoCoRB.buffer_control import rbExport
+from mimocorb.buffer_control import rbExport
 
 import pandas as pd
 import numpy as np

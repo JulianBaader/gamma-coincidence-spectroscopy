@@ -25,6 +25,22 @@ Functions:
       num_process: 1
       RB_assign:
         RB_1: "write"
+
+  - Fkt_2:
+      file_name: "mimoCoRB/analyzers"
+      fkt_name: "single"
+      config_file: "config/analyzer-config.yaml"
+      num_process: 1
+      RB_assign:
+        RB_1: "read"
+        RB_2: "write"
+
+  - Fkt_3:
+      file_name: "mimoCoRB/exporters"
+      fkt_name: "drain"
+      num_process: 1
+      RB_assign:
+        RB_2: "read"
       
 
 
