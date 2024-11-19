@@ -63,6 +63,7 @@ def save_spectrum(source_list=None, sink_list=None, observe_list=None, config_di
     bins = np.linspace(config_dict['bins'][0], config_dict['bins'][1], config_dict['bins'][2])
     save_interval = config_dict['save_interval']
     filename = config_dict['filename']
+    channels = config_dict['channels']
     
 
     exporter = rbExport(source_list=source_list, config_dict=config_dict, **rb_info)
@@ -70,7 +71,10 @@ def save_spectrum(source_list=None, sink_list=None, observe_list=None, config_di
         raise ValueError('Spectrum exporter only supports one value per slot')
     generator = exporter()
     
-    channels = [dtype[0] for dtype in exporter.source.dtype]
+    mimo_channels = [dtype[0] for dtype in exporter.source.dtype]
+    for ch in channels:
+        if ch not in mimo_channels:
+            raise ValueError('Channel {} not found in source'.format(ch))
 
     hists = {ch: np.zeros(len(bins) - 1) for ch in channels}
     
