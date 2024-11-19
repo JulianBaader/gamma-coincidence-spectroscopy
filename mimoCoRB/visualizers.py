@@ -1,7 +1,6 @@
 import matplotlib.pyplot as plt
 import numpy as np
 import time
-import pandas as pd
 
 
 def vis_spectrum(source_list=None, sink_list=None, observe_list=None, config_dict=None, **rb_info):
@@ -10,13 +9,12 @@ def vis_spectrum(source_list=None, sink_list=None, observe_list=None, config_dic
     save_interval = config_dict['save_interval']
     filename = config_dict['filename']
     channels = config_dict['channels']
-    
-    
+
     fig = plt.figure()
     ax = fig.add_subplot(111)
     ys = {ch: np.zeros(len(bins) - 1) for ch in channels}
     stairs = {ch: ax.stairs(ys[ch], edges=bins, label=ch) for ch in channels}
-    
+
     # create the legend and make it interactive
     legend = ax.legend(title='Click to hide/show')
     legend_texts = legend.get_texts()
@@ -49,6 +47,7 @@ def vis_spectrum(source_list=None, sink_list=None, observe_list=None, config_dic
 
     # make the y axis clickable to toggle between lin and log
     ax.yaxis.label.set_picker(True)
+
     def update_yaxis(current_scale):
         ax.set_ylabel('Log (click to toggle)' if current_scale == 'linear' else 'Linear (click to toggle)')
         ax.set_yscale('log' if current_scale == 'linear' else 'linear')
@@ -68,7 +67,7 @@ def vis_spectrum(source_list=None, sink_list=None, observe_list=None, config_dic
 
     plt.ion()
     plt.show()
-    
+
     last_update = time.time()
     while True:
         if time.time() - last_update > save_interval:

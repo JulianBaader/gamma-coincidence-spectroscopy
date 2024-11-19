@@ -2,8 +2,6 @@ import socket
 import struct
 import numpy as np
 
-import time
-
 import mimoCoRB.buffer_control as bc
 
 
@@ -166,17 +164,17 @@ class rpControll:
         self.total_number_of_samples = number
         self.command(18, 0, number + CUT_OFF)
 
-    def set_generator_fall_time(self, time):
+    def set_generator_fall_time(self, fall_time):
         # TODO check if time is valid
         # TODO unit of time
-        self.fall_time = time
-        self.command(21, 0, time)
+        self.fall_time = fall_time
+        self.command(21, 0, fall_time)
 
-    def set_generator_rise_time(self, time):
+    def set_generator_rise_time(self, rise_time):
         # TODO check if time is valid
         # TODO unit of time
-        self.rise_time = time
-        self.command(22, 0, time)
+        self.rise_time = rise_time
+        self.command(22, 0, rise_time)
 
     def set_generator_rate(self, rate):
         # TODO check if rate is valid
@@ -215,7 +213,7 @@ class rpControll:
 
     def start_oscillocsope(self):
         self.command(19, 0, 0)
-        
+
     def set_set_size(self, set_size):
         self.set_size = set_size
 
@@ -286,19 +284,17 @@ class rpControll:
 def redpitaya_to_mimoCoRB(source_list=None, sink_list=None, observe_list=None, config_dict=None, **rb_info):
     if config_dict is None:
         raise ValueError("ERROR! No configuration for redpitaya_to_mimoCoRB provided.")
-    
+
     # read the configuration
     """
     ip: str
     sample_rate: 4                          # int (see SAMPLE_RATES)
     negator_IN1: false                      # bool
     negator_IN2: false                      # bool
-    trigger_source: 'IN1'                   # str (see INPUTS)
     trigger_slope: 'rising'                 # str (see TRIGGER_SLOPES)
     trigger_mode: 'normal'                  # str (see TRIGGER_MODES)
     trigger_level: 100                      # int
     number_of_samples_before_trigger: 500   # int
-    total_number_of_samples: 1500           # int
     set_size: 100                           # int
     """
     try:
@@ -313,7 +309,7 @@ def redpitaya_to_mimoCoRB(source_list=None, sink_list=None, observe_list=None, c
         set_size = config_dict['set_size']
     except KeyError as e:
         raise ValueError("ERROR! Missing configuration parameter: " + str(e))
-    
+
     rp = rpControll()
     rp.connect(ip)
     rp.set_sample_rate(sample_rate)
@@ -323,12 +319,12 @@ def redpitaya_to_mimoCoRB(source_list=None, sink_list=None, observe_list=None, c
     rp.set_trigger_mode(trigger_mode)
     rp.set_trigger_level(trigger_level)
     rp.set_number_of_samples_before_trigger(number_of_samples_before_trigger)
-    
+
     rp.set_set_size(set_size)
-    
+
     importer = bc.rbImport(sink_list=sink_list, config_dict=config_dict, ufunc=rp.acquire_single, **rb_info)
     sink_names = [dtype[0] for dtype in importer.sink.dtypes]
-    
+
     if len(sink_names) != 2:
         raise ValueError("ERROR! Redpitaya can only write to two channels")
     if sink_names == ['trigger_channel', 'coincidence_channel']:
@@ -336,17 +332,17 @@ def redpitaya_to_mimoCoRB(source_list=None, sink_list=None, observe_list=None, c
     elif sink_names == ['coincidence_channel', 'trigger_channel']:
         rp.set_trigger_source("IN2")
     else:
-        raise ValueError("ERROR! One buffer of the sink must be denoted as 'trigger_channel' and the other as 'coincidence_channel'")
-    
+        raise ValueError(
+            "ERROR! One buffer of the sink must be denoted as 'trigger_channel' and the other as 'coincidence_channel'"
+        )
+
     rp.set_total_number_of_samples(importer.sink.values_per_slot)
-    
-    
+
     rp.reset_oscilloscope()
     rp.start_oscillocsope()
-    
+
     importer()
-     
-    
+
 
 if __name__ == "__main__":
     print("This is a mimoCoRB module and is not meant to be run directly.")

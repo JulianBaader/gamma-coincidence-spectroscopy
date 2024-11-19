@@ -5,6 +5,7 @@ import numpy as np
 from numpy.lib import recfunctions as rfn
 import time
 
+
 def drain(source_list=None, sink_list=None, observe_list=None, config_dict=None, **rb_info):
     exporter = rbExport(source_list=source_list, config_dict=config_dict, **rb_info)
     generator = exporter()
@@ -18,12 +19,12 @@ def drain(source_list=None, sink_list=None, observe_list=None, config_dict=None,
 def save_csv(source_list=None, sink_list=None, observe_list=None, config_dict=None, **rb_info):
     filename = config_dict['filename']
     save_interval = config_dict['save_interval']
-    
+
     exporter = rbExport(source_list=source_list, config_dict=config_dict, **rb_info)
-    
+
     if exporter.source.values_per_slot != 1:
         raise ValueError('CSV exporter only supports one value per slot')
-    
+
     generator = exporter()
 
     header = []
@@ -51,33 +52,32 @@ def save_csv(source_list=None, sink_list=None, observe_list=None, config_dict=No
         unstructured_data = rfn.structured_to_unstructured(data[0])
         new_line = np.append(metadata, unstructured_data)
         df.loc[count] = new_line
-        
+
         if time.time() - last_save > save_interval:
             df.to_csv(config_dict['directory_prefix'] + '/' + filename + '.csv', index=False, mode='a', header=False)
             last_save = time.time()
             df = pd.DataFrame(columns=header)
             count = 0
-            
-            
+
+
 def save_spectrum(source_list=None, sink_list=None, observe_list=None, config_dict=None, **rb_info):
     bins = np.linspace(config_dict['bins'][0], config_dict['bins'][1], config_dict['bins'][2])
     save_interval = config_dict['save_interval']
     filename = config_dict['filename']
     channels = config_dict['channels']
-    
 
     exporter = rbExport(source_list=source_list, config_dict=config_dict, **rb_info)
     if exporter.source.values_per_slot != 1:
         raise ValueError('Spectrum exporter only supports one value per slot')
     generator = exporter()
-    
+
     mimo_channels = [dtype[0] for dtype in exporter.source.dtype]
     for ch in channels:
         if ch not in mimo_channels:
             raise ValueError('Channel {} not found in source'.format(ch))
 
     hists = {ch: np.zeros(len(bins) - 1) for ch in channels}
-    
+
     last_save = time.time()
     while True:
         ret = next(generator)
