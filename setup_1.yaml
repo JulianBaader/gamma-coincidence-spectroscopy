@@ -1,0 +1,31 @@
+RingBuffer:
+  - RB_1:
+      number_of_slots: 500
+      channel_per_slot: 1000
+      data_type:
+        1: ['trigger_channel', "int16"]
+        2: ['coincidence_channel', "int16"]
+  
+  - RB_2:
+      number_of_slots: 500 # must be high enough to allow for pauses because of writing to file
+      channel_per_slot: 1
+      data_type:
+        1: ['height', "int16"]
+
+Functions:
+  - Fkt_main:
+      config_file: "config/general-config.yaml"
+
+  - Fkt_1:
+      file_name: "mimoCoRB/file_source"
+      fkt_name: "tar_parquet_source"
+      # file_name: "rpDAQ"
+      # fkt_name: "rp_mimocorb"
+      config_file: "config/rp-config.yaml"
+      num_process: 1
+      RB_assign:
+        RB_1: "write"
+      
+
+
+
