@@ -8,7 +8,7 @@ def coincidence(source_list=None, sink_list=None, observe_list=None, config_dict
     peak_config2 = config_dict['peak_config2']
 
     entry_out = np.zeros((1,), dtype=sink_list[0]['dtype'])
-    
+
     channels = [dtype[0] for dtype in source_list[0]['dtype']]
     ch1 = channels[0]
     ch2 = channels[1]

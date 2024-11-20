@@ -88,28 +88,25 @@ def vis_spectrum(source_list=None, sink_list=None, observe_list=None, config_dic
 
         fig.canvas.flush_events()
         time.sleep(0.05)  # Updates at 20 FPS
-        
-        
+
+
 def vis_osc_obs(source_list=None, sink_list=None, observe_list=None, config_dict=None, **rb_info):
-    
     tmax = observe_list[0]['values_per_slot']
     channels = [dtype[0] for dtype in observe_list[0]['dtype']]
-    
+
     update_interval = config_dict['update_interval']
-    
-    
+
     fig = plt.figure()
     fig.canvas.manager.set_window_title('Oscilloscope')
     ax = fig.add_subplot(111)
     ax.set_xlim(0, tmax)
-    ax.set_ylim(-4095,4096)
+    ax.set_ylim(-4095, 4096)
 
     ax.hlines(0, 0, tmax, linestyles='dashed')
 
-
     ys = {ch: np.zeros(tmax) for ch in channels}
     lines = {ch: ax.plot(ys[ch], label=ch)[0] for ch in channels}
-    
+
     # create the legend and make it interactive
     legend = ax.legend(title='Click to hide/show')
     legend_texts = legend.get_texts()
@@ -138,13 +135,13 @@ def vis_osc_obs(source_list=None, sink_list=None, observe_list=None, config_dict
         fig.canvas.draw()
 
     fig.canvas.mpl_connect('pick_event', on_pick)
-    
+
     plt.ion()
     plt.show()
-    
+
     observer = rbObserver(observe_list=observe_list, config_dict=config_dict, **rb_info)
     generator = observer()
-    
+
     last_update = time.time()
     while True:
         if time.time() - last_update > update_interval:
@@ -159,8 +156,3 @@ def vis_osc_obs(source_list=None, sink_list=None, observe_list=None, config_dict
             last_update = time.time()
         fig.canvas.flush_events()
         time.sleep(0.05)
-        
-    
-    
-    
-    
