@@ -1,0 +1,5 @@
+bins: [0,4095,4096]
+save_interval: 5
+filename: "spectrum"
+channels: 
+  - 'height'

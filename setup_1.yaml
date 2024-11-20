@@ -37,10 +37,17 @@ Functions:
 
   - Fkt_3:
       file_name: "mimoCoRB/exporters"
-      fkt_name: "drain"
+      fkt_name: "save_spectrum"
+      config_file: "config/spectrum-config.yaml"
       num_process: 1
       RB_assign:
         RB_2: "read"
+
+  - Fkt_4:
+      file_name: "mimoCoRB/visualizers"
+      fkt_name: "vis_spectrum"
+      config_file: "config/spectrum-config.yaml"
+      num_process: 1
       
 
 
