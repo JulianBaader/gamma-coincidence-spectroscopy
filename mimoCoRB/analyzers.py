@@ -8,10 +8,14 @@ def coincidence(source_list=None, sink_list=None, observe_list=None, config_dict
     peak_config2 = config_dict['peak_config2']
 
     entry_out = np.zeros((1,), dtype=sink_list[0]['dtype'])
+    
+    channels = [dtype[0] for dtype in source_list[0]['dtype']]
+    ch1 = channels[0]
+    ch2 = channels[1]
 
     def ufunc(data):
-        heights_1, times_1 = pha(data[0], peak_config1)
-        heights_2, times_2 = pha(data[1], peak_config2)
+        heights_1, times_1 = pha(data[ch1], peak_config1)
+        heights_2, times_2 = pha(data[ch2], peak_config2)
 
         if len(heights_1) != 1 or len(heights_2) != 1:
             return None
