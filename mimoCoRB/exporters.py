@@ -1,4 +1,4 @@
-from mimocorb.buffer_control import rbExport
+from mimocorb.buffer_control import rbExport, rb_toParquetfile
 
 import pandas as pd
 import numpy as np
@@ -94,3 +94,8 @@ def save_spectrum(source_list=None, sink_list=None, observe_list=None, config_di
 
     for ch in channels:
         np.save(config_dict['directory_prefix'] + '/' + filename + '_' + ch + '.npy', hists[ch])
+
+
+def save_parquet(source_list=None, sink_list=None, observe_list=None, config_dict=None, **rb_info):
+    sv = rb_toParquetfile(source_list=source_list, config_dict=config_dict, **rb_info)
+    sv()

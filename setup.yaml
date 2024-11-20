@@ -1,0 +1,57 @@
+Functions:
+- Fkt_main:
+    config_file: config/general-config.yaml
+- Fkt_1:
+    RB_assign:
+      RB_1: write
+    config_file: config/rp-config.yaml
+    file_name: mimoCoRB/file_source
+    fkt_name: tar_parquet_source
+    num_process: 1
+  filename: mimoCoRB/file_source
+  fkt_name: tar_parquet_source
+- Fkt_2:
+    RB_assign:
+      RB_1: read
+      RB_2: write
+    config_file: config/analyzer-config.yaml
+    file_name: mimoCoRB/analyzers
+    fkt_name: single
+    num_process: 1
+- Fkt_3:
+    RB_assign:
+      RB_2: read
+    config_file: config/spectrum-config.yaml
+    file_name: mimoCoRB/exporters
+    fkt_name: save_spectrum
+    num_process: 1
+- Fkt_4:
+    config_file: config/spectrum-config.yaml
+    file_name: mimoCoRB/visualizers
+    fkt_name: vis_spectrum
+    num_process: 1
+- Fkt_5:
+    RB_assign:
+      RB_1: observe
+    config_file: config/osc-config.yaml
+    file_name: mimoCoRB/visualizers
+    fkt_name: vis_osc_obs
+    num_process: 1
+RingBuffer:
+- RB_1:
+    channel_per_slot: 1000
+    data_type:
+      1:
+      - trigger_channel
+      - int16
+      2:
+      - coincidence_channel
+      - int16
+    number_of_slots: 500
+- RB_2:
+    channel_per_slot: 1
+    data_type:
+      1:
+      - height
+      - int16
+    number_of_slots: 500

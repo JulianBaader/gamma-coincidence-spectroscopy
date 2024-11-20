@@ -3,11 +3,11 @@ RingBuffer:
       number_of_slots: 500
       channel_per_slot: 1000
       data_type:
-        1: ['coincidence_channel', "int16"]
-        2: ['trigger_channel', "int16"]
+        1: ['trigger_channel', "int16"]
+        2: ['coincidence_channel', "int16"]
   
   - RB_2:
-      number_of_slots: 500 # must be high enough to allow for pauses because of writing to file
+      number_of_slots: 500
       channel_per_slot: 1
       data_type:
         1: ['height', "int16"]
@@ -19,38 +19,20 @@ Functions:
   - Fkt_1:
       file_name: "mimoCoRB/file_source"
       fkt_name: "tar_parquet_source"
-      # file_name: "rpDAQ"
-      # fkt_name: "rp_mimocorb"
       config_file: "config/rp-config.yaml"
       num_process: 1
       RB_assign:
         RB_1: "write"
 
   - Fkt_2:
-      file_name: "mimoCoRB/analyzers"
-      fkt_name: "single"
-      config_file: "config/analyzer-config.yaml"
+      file_name: "mimoCoRB/exporters"
+      fkt_name: "save_parquet"
       num_process: 1
       RB_assign:
         RB_1: "read"
-        RB_2: "write"
-
-  - Fkt_3:
-      file_name: "mimoCoRB/exporters"
-      fkt_name: "save_spectrum"
-      config_file: "config/spectrum-config.yaml"
-      num_process: 1
-      RB_assign:
-        RB_2: "read"
-
-  - Fkt_4:
-      file_name: "mimoCoRB/visualizers"
-      fkt_name: "vis_spectrum"
-      config_file: "config/spectrum-config.yaml"
-      num_process: 1
 
       
-  - Fkt_5:
+  - Fkt_3:
       file_name: "mimoCoRB/visualizers"
       fkt_name: "vis_osc_obs"
       config_file: "config/osc-config.yaml"

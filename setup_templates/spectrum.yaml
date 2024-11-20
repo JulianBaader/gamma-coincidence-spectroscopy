@@ -7,12 +7,10 @@ RingBuffer:
         2: ['coincidence_channel', "int16"]
   
   - RB_2:
-      number_of_slots: 500 # must be high enough to allow for pauses because of writing to file
+      number_of_slots: 500 
       channel_per_slot: 1
       data_type:
-        1: ['height_1', "int16"]
-        2: ['height_2', "int16"]
-        3: ['time_difference', "int16"]
+        1: ['height', "int16"]
 
 Functions:
   - Fkt_main:
@@ -30,7 +28,7 @@ Functions:
 
   - Fkt_2:
       file_name: "mimoCoRB/analyzers"
-      fkt_name: "coincidence"
+      fkt_name: "single"
       config_file: "config/analyzer-config.yaml"
       num_process: 1
       RB_assign:
@@ -39,26 +37,25 @@ Functions:
 
   - Fkt_3:
       file_name: "mimoCoRB/exporters"
-      fkt_name: "save_csv"
-      config_file: "config/coincidence-config.yaml"
+      fkt_name: "save_spectrum"
+      config_file: "config/spectrum-config.yaml"
       num_process: 1
       RB_assign:
         RB_2: "read"
 
-      
   - Fkt_4:
+      file_name: "mimoCoRB/visualizers"
+      fkt_name: "vis_spectrum"
+      config_file: "config/spectrum-config.yaml"
+      num_process: 1
+
+      
+  - Fkt_5:
       file_name: "mimoCoRB/visualizers"
       fkt_name: "vis_osc_obs"
       config_file: "config/osc-config.yaml"
       num_process: 1
       RB_assign:
         RB_1: "observe"
-
-  - Fkt_5:
-      file_name: "mimoCoRB/gamma_coincidence_live_visualisation"
-      fkt_name: "main"
-      config_file: "config/coincidence-config.yaml"
-      num_process: 1
-       
 
 
