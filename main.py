@@ -35,36 +35,42 @@ while trigger_type not in ['IN1', 'IN2']:
 with open('setup_templates/' + output_type + '.yaml', 'r') as file:
     template = yaml.load(file, Loader=yaml.FullLoader)
 
+# load RB_1 setup
+with open('setup_templates/RB_1.yaml', 'r') as file:
+    rb_1 = yaml.load(file, Loader=yaml.FullLoader)
+
 setup = template
 
-fkt_1 = setup['Functions'][1]
+
+fkt_1 = setup['Functions'][1]['Fkt_1']
 
 if input_type == 'redpitaya':
-    fkt_1['filename'] = "rpDAQ"
+    fkt_1['file_name'] = "rpDAQ"
     fkt_1['fkt_name'] = "rp_mimocorb"
 elif input_type == 'tar':
-    fkt_1['filename'] = "mimoCoRB/file_source"
+    fkt_1['file_name'] = "mimoCoRB/file_source"
     fkt_1['fkt_name'] = "tar_parquet_source"
 else:
     raise ValueError(f"{input_type=} not correctly implemented")
 
 
-rb_1 = setup['RingBuffer'][0]['RB_1']['data_type']
+setup['RingBuffer'][0]['RB_1'] = rb_1
+rb_1_data_type = setup['RingBuffer'][0]['RB_1']['data_type']
 if trigger_type == 'IN1':
-    rb_1[1][0] = 'trigger_channel'
-    rb_1[2][0] = 'coincidence_channel'
+    rb_1_data_type[1][0] = 'trigger_channel'
+    rb_1_data_type[2][0] = 'coincidence_channel'
 elif trigger_type == 'IN2':
-    rb_1[1][0] = 'coincidence_channel'
-    rb_1[2][0] = 'trigger_channel'
+    rb_1_data_type[1][0] = 'coincidence_channel'
+    rb_1_data_type[2][0] = 'trigger_channel'
 else:
     raise ValueError(f"{trigger_type=} not correctly implemented")
 
 # save the setup
-output_file = 'setup.yaml'
-with open(output_file, 'w') as file:
+setup_filename = 'setup.yaml'
+with open(setup_filename, 'w') as file:
     yaml.dump(setup, file)
 
-daq = run_mimoDAQ(output_file, verbose=args.verbose, debug=args.debug)
+daq = run_mimoDAQ(setup_filename, verbose=args.verbose, debug=args.debug)
 
 daq.setup()
 
