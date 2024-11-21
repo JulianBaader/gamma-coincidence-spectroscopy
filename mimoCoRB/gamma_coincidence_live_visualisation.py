@@ -73,7 +73,7 @@ def main(source_list=None, sink_list=None, observe_list=None, config_dict=None, 
             y_delta_t = np.histogram(df['time_difference'][mask], bins=bins)[0]
             line_delta_t.set_ydata(y_delta_t)
 
-            ax_delta_t.set_ylim(0, 1.1 * np.max(y_delta_t))
+            ax_delta_t.set_ylim(0, 1.1 * np.max(y_delta_t) + 0.1)
 
             fig.canvas.draw()
             last_update = time.time()
