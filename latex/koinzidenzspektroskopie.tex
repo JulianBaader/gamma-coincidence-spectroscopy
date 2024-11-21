@@ -1,0 +1,61 @@
+\section{Versuch 3: $\gamma$-Koinzidenzspektroskopie}
+\subsection{Aufgaben}
+\begin{enumerate}
+    \item Messung des $\gamma$-Spektrums von \ce{^22Na}, \ce{^137Cs} und \ce{^60Co} mit beiden Detektoren (NaI-Detektor und Ge-Detektor). Energiekalibration mit Hilfe der Photopeaks.
+    \item Koinzidenzmessung mit \ce{^22Na} und \ce{^60Co} Quellen.
+    \begin{enumerate}
+        \item $\Delta T$ Kalibration mit der \ce{^22Na} Quelle.
+        \item Analyse der Koinzidenzen. Zwischen welchen Photonen gibt es eine signifikante korrelation? Mit welchem Termschema kann man diese erklären? Gibt es weitere Koinzidenzen?
+    \end{enumerate}
+    \item Analyse der Abhängigkeit der Energieauflösung des Ge-Detektors und des NaI-Detektors von der Energie. Wie lässt sich der Unterschied erklären?
+\end{enumerate}
+
+\input{termschema}
+
+\subsection{Einführung}
+Ein Kern emittiert $\gamma$-Quanten, wenn er sich nach vorausgegangenem $\alpha$ oder $\beta$-Zerfall oder infolge einer Kernreaktion in einem angergeten Zustand befindet. Der Übergang in den Grundzustand kann dabei in einem Schritt und/oder stufenweise erfolgen. In diesem Fall spricht man von $\gamma$-Kaskaden. Bei hoch angeregten Kernen sind i.a. mehrere Wege zum Grundzustand möglich. Die relative Häufigkeit eines bestimmten Weges hängt von den Quantenzahlen der Spins der beteiligten Zustände und deren Parität ab und wird durch das sog. Verzweigungsverhältnis ausgedrückt. Ziel der $\gamma$-Spektroskopie ist es, die Energie und die Quantenzahlen der Zustände zu bestimmen.
+
+In diesem Versuch wird eine Methode vorgestellt, die ein erster Schritt zur Festlegung des Termschemas von Kernen ist, die Koinzidenzspektroskopie. Sie ist auch ein wesentlicher Bestandteil von weiterführenden Experimenten zur Bestimmung der Quantenzahlen, wie z.B. der Messung der Winkelkorrelation.
+
+Die Koinzidenzmethode, ursprünglich von W. Bothe und H. Geiger entwickelt, ist eine Methode um zwischen Hintergrund und relevanten Ereignissen zu unterscheiden. Dies ist möglich sofern die interessanten Ereignisse über mehrere Kanäle gleichzeitig registriert werden, während die hintergrund Ereignisse immer nur in einzelnen Kanälen auftreten.
+Die hintergrund Prozesse können meist als unabhängige Poisson verteilte Ereignisse mit einer Rate $\nu_i$ in Detektor $i$ modelliert werden. Diese hintergrund Prozesse erzeugen zufällige Koinzidenz Ereignisse, die wiederum Poisson verteilt mit einer Rate von $\nu_1\cdot\nu_2\cdot\Delta T$ sind. $\Delta T$ bezeichnet hierbei die Zeitspanne in denen ein Koinzidenz Ereignis auftreten muss um als solches registriert zu werden.
+
+\subsection{Prinzip der Messung}
+Der Versuchsaufbau besteht aus zwei $\gamma$-Detektoren (NaI-Szintillator und HPGe-Halbleiterzähler), deren Energiesignale von einem RedPitaya ausgelesen werden. Der RedPitaya fungiert als Oszilloskop und nimmt beide Kanäle gleichzeitig auf. Das Oszilloskop wird von einem Kanal getriggert. Findet sich in dem anderen Kanal ebenfalls ein Puls spricht man von einem Koinzidenzereignis.
+%Die Oszilloskop Daten werden an mimoCoRB (multiple-in, multiple-out Configurable RingBuffer) übertragen und dort analysiert.
+Im ersten Schritt werden mit bekannten Eichquellen die Energieskalen kalibriert. Mithilfe der bekannten Koinzidenz der \ce{^22Na} Quelle wird die Zeitdifferenz der Pulse kalibriert.
+
+\ce{^60Co} ist ein $\beta^{-}$-Strahler mit zwei $\gamma$-Übergängen (1,173 MeV und 1,332 MeV), wie man aus den Einzelspektren entnimmt. Für das Termschema gibt es damit prinzipiell die zwei in Fig. \ref{fig:termscheme} dargestellten Möglichkeiten. In Fall a) werden die angeregten Zustände durch zwei unabhängige $\beta$-Übergänge besetzt. Deshalb werden auch die $\gamma$-Quanten zeitlich unabhängig voneinander emittiert. Anders der Fall b). Dort gibt es nur einen $\beta$-Zerfall zum höchsten angeregten Zustand, und die folgenden $\gamma$-Quanten bilden den einfachsten Fall einer Kaskade. Wenn der Zwischenzustand hinreichend kurzlebig ist, bei \ce{^60Co} ist das mit $10^{-12}\mathrm{s}$ der Fall, treten die beiden Quanten praktisch gleichzeitig auf. Durch ein Koinzidenexperiment, bei dem die Gleichzeitigkeit der Zerfälle geprüft wird, kann man zwischen den beiden Möglichkeiten unterscheiden. Mithilfe eines Likelihood Ratio Tests kann die Signifikanz der Koinzidenzen bestimmt werden. Hierzu vergleicht man die Hypothese \emph{Es gibt keine Koinzidenzen} mit der Hypothese \emph{Es gibt Koinzidenzen}.
+
+
+Die Anordnung des Experiments ist in Fig. \ref{fig:anordnung} skizziert. Das analoge Signal der Detektoren ist zunächst (vor-)verstärkt und dann von dem RedPitaya in ein digitales Signal umgewandelt. Der CIC Filter wird als Dezimationsfilter verwendet und erlaubt es die 125MegaSamples/s zu reduzieren. Wird das Oszilloskop getriggert, so werden die Daten von dem CPU an den mimoCoRB client übetragen. mimoCoRB erlaubt es diese Daten beliebig zu analysieren. Für den Versuch stehen zwei setups bereit. Das erste setup analysiert den Trigger Kanal bezüglich der Pulshöhe und erstellt daraus ein Spektrum. Das zweite setup untersucht beide Kanäle nach Ereignissen. Sofern in beiden Kanälen ein Ereignis gefunden wurde, werden sowohl die Pulshöhen als auch die Zeitdifferenz gespeichert. Zusätzlich können die Daten in beiden Moden live visualisiert werden.
+
+\input{setup}
+
+
+\section{Analyse}
+
+Aus der Energiekalibration erhält man die Pulshöhen $h^\mathrm{Detektor}$, die den Photopeaks $i$ zugeordnet werden können $$h^\mathrm{Detektor}\in\left(\mu^\mathrm{Detektor}_i\pm\sigma^\mathrm{Detektor}_i\right)=H^\mathrm{Detektor}_i.$$
+Zu jedem Koinzidenzereignis werden die Pulshöhen ($h^\mathrm{NaI}$, $h^\mathrm{HPGe}$) und die zeitdifferenz in samples ($\Delta$) gespeichert. Wählt man nun die Ereignisse aus, die sowohl in $H^\mathrm{NaI}_i$ als auch in $H^\mathrm{HPGe}_j$ liegen, so kann man ein Spektrum der Zeitdifferenzen der vier Kombinationen erstellen. Für jedes dieser Spektren wird nun überprüft ob es sich um ein signifikantes Signal handelt oder ob die Daten durch Hintergrund erklärt werden können.
+
+Hierzu muss eine Wahrscheinlichkeitsdichtefunktion aufgestellt werden.
+\begin{align}
+    \mathrm{pdf}(\Delta, r, a,b, \dots)= r\cdot\mathrm{pdf}_\mathrm{Signal}(\Delta,\dots) + (1-r)\cdot\mathrm{pdf}_\mathrm{Hintergrund}(\Delta,\dots)
+\end{align}
+wobei $\mathrm{pdf}_\mathrm{Signal}$ und $\mathrm{pdf}_\mathrm{Hintergrund}$ jeweils auf dem Intervall $\left[a,b\right]$ normiert sind.
+
+\begin{itemize}
+    \item Wie ist die Zeitdifferenz bei einer zufälligen Koinzidenz verteilt?
+    \item Wie kann der theoretische $\delta$ peak der echten Koinzidenzen modelliert werden?
+\end{itemize}
+
+Mithilfe von \texttt{kafe2} kann die pdf an die gemessenen Daten angepasst werden (Histogram oder Unbinned Fit). Für den Hypothesentest nach Kapitel \ref{...} wird sowohl die Likelihood für $r=\hat r$ und die für $r=0$ benötigt. Zweiteres kann durch \texttt{fit.fix\_parameter("r", 0)} bestimmt werden.\footnote{Beachte, dass die Angabe von $\mathcal{L}/\mathrm{ndof}$ nicht mehr unbedingt aussagekräftig ist.} Da die Rate an Natrium Koinzidenzen deutlich höher ist, kann diese Messung verwendet werden um die Parameter mit \texttt{fit.limit\_parameter("param", lower=, upper=)} einzugrenzen.
+
+%Um dies zu überprüfen muss die Likelihood der beiden oben genannten Hypothesen bestimmt werden. Die zufälligen Koinzidenzen treten im $\Delta T$ Spektrum gleichverteilt auf. Nimmt man an, die echten Koinzidenzen treten nur in einem bestimmten Zeitfenster auf, so ist es möglich die Likelihood für beide Hypothesen analytisch zu maximieren. Einfacher ist es jedoch eine numerische Methode (mit kafe2) zu verwenden. Hier kann zusätzlich eine beliebige Verteilung der echten Koinzidenzen angenommen werden (z.B. Gauss verteilt).
+
+\section{Literatur}
+Einführende Kapitel 1-6 in diesem Skript, insbesondere 6.3.3 Bestimmung von Ausschlussgrenzen und Signifikanzniveaus
+
+Die anderen Quellen vom alten Versuch
+
+Meine Bachelorarbeit lol

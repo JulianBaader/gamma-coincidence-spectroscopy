@@ -1,0 +1,49 @@
+\newcommand{\weirdertext}{1.332MeV \\[-.5\baselineskip] % Adjust vertical space as needed
+    \phantom{1.332MeV} or \\[-.5\baselineskip] % Adjust vertical space as needed
+    1.173MeV}
+
+\begin{figure}[b]
+    \centering
+    \begin{subfigure}{0.4\textwidth}
+        \centering
+        \begin{tikzpicture}[>=stealth,thick]
+            \draw(0,4) -- (2,4) node[midway,above] {\ce{^{60}Co}};
+            \draw(2,3) -- (4,3);
+            \draw(2,2) -- (3,2);
+            \draw[dashed](3.4,2) -- (3,2);
+            \draw[dashed](3.6,2) -- (4,2);
+            \node at (5,3) {1.332MeV};
+            \node at (5,2) {1.173MeV};
+            \draw(2,0) -- (4,0) node[midway,below] {\ce{^{60}Ni}};
+            \draw[->] (1,4) -- (2,3) node[midway, right, xshift=2.5, yshift=2.5]{$\beta_2$};
+            \draw[->] (1,4) -- (2,2) node[midway, left]{$\beta_1$};
+            \draw[->] (2.5,2) -- (2.5,0) node[midway, right]{$\gamma_1$};
+            \draw[->] (3.5,3) -- (3.5, 0) node[midway, right]{$\gamma_2$};
+        \end{tikzpicture}
+        \caption{Independant Decay}
+        \label{fig:termschema:independant}
+    \end{subfigure}%
+    \begin{subfigure}{0.4\textwidth}
+        \centering
+        \begin{tikzpicture}[>=stealth,thick]
+            \draw(0,4) -- (2,4) node[midway,above] {\ce{^{60}Co}};
+            \draw(2,3) -- (4,3);
+            \node[anchor=west, align=left] at (4,3) {2.505MeV};
+            \node[anchor=west, align=left] at (4,1.5) {\weirdertext};
+            \draw(2,1.5) -- (4,1.5);
+            \draw(2,0) -- (4,0) node[midway,below] {\ce{^{60}Ni}};
+            \draw[->] (1,4) -- (2,3) node[midway, right, xshift=2.5, yshift=2.5]{$\beta$};
+            \draw[->] (3,3) -- (3,1.5) node[midway, right]{$\gamma_a$};
+            \draw[->] (3,1.5) -- (3,0) node[midway, right]{$\gamma_b$};
+        \end{tikzpicture}
+        \caption{Cascade}
+        \label{fig:termscheme:cascade}
+    \end{subfigure}
+    \caption{Mögliche Termschemata für den Zweiquantenzerfall.}
+    \label{fig:termscheme}
+
+\end{figure}
+
+
+
+%\SI{1.332}{\MeV} \\ or\\ \SI{1.173}{\MeV}
