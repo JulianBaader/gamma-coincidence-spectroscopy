@@ -23,8 +23,8 @@ input_type = args.input
 output_type = args.output
 trigger_type = args.trigger
 
-while input_type not in ['tar', 'redpitaya']:
-    input_type = input("Select an input (tar, redpitaya): ")
+if input_type not in ['tar', 'redpitaya']:
+    input_type = 'redpitaya'
 while output_type not in ['tar', 'spectrum', 'coincidence']:
     output_type = input("Select an output (tar, spectrum, coincidence): ")
 while trigger_type not in ['IN1', 'IN2']:
