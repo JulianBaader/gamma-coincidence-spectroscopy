@@ -45,8 +45,8 @@ setup = template
 fkt_1 = setup['Functions'][1]['Fkt_1']
 
 if input_type == 'redpitaya':
-    fkt_1['file_name'] = "rpDAQ"
-    fkt_1['fkt_name'] = "rp_mimocorb"
+    fkt_1['file_name'] = "mimoCoRB/redpitaya"
+    fkt_1['fkt_name'] = "redpitaya_to_mimoCoRB"
 elif input_type == 'tar':
     fkt_1['file_name'] = "mimoCoRB/file_source"
     fkt_1['fkt_name'] = "tar_parquet_source"

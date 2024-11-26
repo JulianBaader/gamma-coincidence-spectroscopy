@@ -1,5 +1,5 @@
 number_of_slots: 100
-channel_per_slot: 1000
+channel_per_slot: 1500
 data_type:
   1: ['channel', "int16"]
   2: ['channel', "int16"]

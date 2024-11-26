@@ -2,7 +2,7 @@ import socket
 import struct
 import numpy as np
 
-import mimoCoRB.buffer_control as bc
+import mimocorb.buffer_control as bc
 
 
 COMMANDS = {
@@ -253,7 +253,7 @@ class rpControll:
                         self.cut_view[bytes_received:], self.cut_bytes - bytes_received
                     )
 
-                yield reshaped.copy()
+                yield [reshaped.copy(), None]
 
     def testing_setup(self, ip):
         self.connect(ip)
@@ -323,7 +323,7 @@ def redpitaya_to_mimoCoRB(source_list=None, sink_list=None, observe_list=None, c
     rp.set_set_size(set_size)
 
     importer = bc.rbImport(sink_list=sink_list, config_dict=config_dict, ufunc=rp.acquire_single, **rb_info)
-    sink_names = [dtype[0] for dtype in importer.sink.dtypes]
+    sink_names = [dtype[0] for dtype in importer.sink.dtype]
 
     if len(sink_names) != 2:
         raise ValueError("ERROR! Redpitaya can only write to two channels")
