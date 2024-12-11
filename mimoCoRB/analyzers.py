@@ -14,6 +14,8 @@ def coincidence(source_list=None, sink_list=None, observe_list=None, config_dict
     ch2 = channels[1]
 
     def ufunc(data):
+        if np.max(data[ch1]) >= 4095 or np.max(data[ch2]) >= 4095:
+            return None
         heights_1, times_1 = pha(data[ch1], peak_config1)
         heights_2, times_2 = pha(data[ch2], peak_config2)
 
@@ -43,6 +45,8 @@ def single(source_list=None, sink_list=None, observe_list=None, config_dict=None
     entry_out = np.zeros((1,), dtype=sink_list[0]['dtype'])
 
     def ufunc(data):
+        if np.max(data['trigger_channel']) >= 4095:
+            return None
         heights, times = pha(data['trigger_channel'], peak_config)
         out = []
         for height in heights:
