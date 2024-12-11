@@ -1,6 +1,6 @@
 general:
   runtime: -1
-  runevents: 100000
+  runevents: -1
 
 save_parquet:
   filename: "spectrum"

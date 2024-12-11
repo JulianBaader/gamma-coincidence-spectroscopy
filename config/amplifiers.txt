@@ -1,0 +1,15 @@
+Spectroscopy Amplifier Model 452
+Coarse Gain: 5
+Shaping Time: 2.0
+Fine Gain: 5; 0
+Output Range: +10V
+NaI Detektor an Input
+IN2 an Unipolar Output
+
+
+
+Spectroscopy Amplifier
+Coarse Gain: 20
+Ge Detektor an Input
+IN1 an Unipolar Output
+Fine Gain: 11; zwischen 10 und 0
