@@ -19,14 +19,14 @@ def main(source_list=None, sink_list=None, observe_list=None, config_dict=None, 
     axs = fig.subplots(2, 1)
 
     ax_scatter = axs[0]
-    ax_scatter.set_xlabel('Height 1')
-    ax_scatter.set_ylabel('Height 2')
+    ax_scatter.set_xlabel('Height 1 [ADC]')
+    ax_scatter.set_ylabel('Height 2 [ADC]')
     scatter = ax_scatter.scatter([], [], s=1)
     ax_scatter.set_xlim(min_height, max_height)
     ax_scatter.set_ylim(min_height, max_height)
 
     ax_delta_t = axs[1]
-    ax_delta_t.set_xlabel('Time difference in Samples')
+    ax_delta_t.set_xlabel('Time difference [Samples]')
     ax_delta_t.set_ylabel('Counts')
     ax_delta_t.set_title('The time difference distribution is shown for the visible energy range')
 

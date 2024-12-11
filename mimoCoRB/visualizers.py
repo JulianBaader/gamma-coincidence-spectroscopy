@@ -17,6 +17,9 @@ def vis_spectrum(source_list=None, sink_list=None, observe_list=None, config_dic
     ax = fig.add_subplot(111)
     ys = {ch: np.zeros(len(bins) - 1) for ch in channels}
     stairs = {ch: ax.stairs(ys[ch], edges=bins, label=ch) for ch in channels}
+    
+    ax.set_xlabel('Pulseheight [ADC]')
+    ax.set_ylabel('Counts')
 
     # create the legend and make it interactive
     legend = ax.legend(title='Click to hide/show')
@@ -106,6 +109,9 @@ def vis_osc_obs(source_list=None, sink_list=None, observe_list=None, config_dict
 
     ys = {ch: np.zeros(tmax) for ch in channels}
     lines = {ch: ax.plot(ys[ch], label=ch)[0] for ch in channels}
+    
+    ax.set_xlabel('Time [Samples]')
+    ax.set_ylabel('Amplitude [ADC]')
 
     # create the legend and make it interactive
     legend = ax.legend(title='Click to hide/show')
