@@ -6,11 +6,8 @@ This is the repository for the gamma-coincidence-experiment at KIT
 ### RedPitaya
 * Follow the instructions from [red-pitaya-daq](https://github.com/JulianBaader/red-pitaya-notes/tree/daq) in order to create a SD-Card with the correct image.
 * Connection via `ssh root@rp-f0c38f.local` password: `changeme`
-* Enable DHCP: Settings-> Network -> USB Ethernet -> IPv4 and IPv6 `shared to other computers`
+* On client pc: Enable DHCP: Settings-> Network -> USB Ethernet -> IPv4 and IPv6 `shared to other computers`
 
-
-TODO USB ethernet an und ipv4 und ipv6 shared to other computers
-maybe disable ethernet??
 ### Physical Setup (16.12.2024)
 * HPGe Detector 
     * -> High Voltage Supply (Kernforschung Nr. 62 848-72):
@@ -64,7 +61,7 @@ maybe disable ethernet??
 * The setup can be configured in three ways:
     * Input, whether the input data should be taken from the redpitaya or a tar source
     * Ouput, whether the data should be analyzed into a spectrum, a coincidence analysis or the raw pulses are to be saved
-    * Trigger, on which channel the trigger is set. This is only relevant for the spectrum and the redpitaya.
+    * Trigger, on which channel the trigger is set.
 
 
 # Debugging
