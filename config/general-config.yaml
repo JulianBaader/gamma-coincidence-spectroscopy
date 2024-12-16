@@ -1,6 +1,6 @@
 general:
-  runtime: -1
-  runevents: -1
+  runtime: -1 # in seconds, -1 for infinite
+  runevents: -1 # -1 for infinite
 
 save_parquet:
   filename: "spectrum"

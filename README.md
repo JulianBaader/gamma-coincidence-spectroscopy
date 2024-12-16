@@ -3,11 +3,6 @@
 This is the repository for the gamma-coincidence-experiment at KIT
 
 ## Setup
-### RedPitaya
-* Follow the instructions from [red-pitaya-daq](https://github.com/JulianBaader/red-pitaya-notes/tree/daq) in order to create a SD-Card with the correct image.
-* Connection via `ssh root@rp-f0c38f.local` password: `changeme`
-* On client pc: Enable DHCP: Settings-> Network -> USB Ethernet -> IPv4 and IPv6 `shared to other computers`
-
 ### Physical Setup (16.12.2024)
 * HPGe Detector 
     * -> High Voltage Supply (Kernforschung Nr. 62 848-72):
@@ -41,10 +36,8 @@ This is the repository for the gamma-coincidence-experiment at KIT
         * Output Range: +10V
         * Left Switch (Pos/Neg): Neg
         * Right Switch BLR (HI/LO/OUT) OUT
+        * Unipolar Output: Connected to RedPitaya (IN2)
 
-* RedPitaya
-    * Running the DAQ Server
-    * Ethernet connected to PC via Ethernet-USB-Dongle
 
 
 
