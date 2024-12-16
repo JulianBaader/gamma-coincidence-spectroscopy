@@ -1,36 +1,79 @@
 # gamma-coincidence-spectroscopy
 
+This is the repository for the gamma-coincidence-experiment at KIT
+
 ## Setup
 ### RedPitaya
-* Copy the Image onto an SD card
-* Connect the RedPitaya to the amplifiers, PC and power.
-### Amplifiers
-* This is the setup that was used during the Bachelor Thesis:
+* Follow the instructions from [red-pitaya-daq](https://github.com/JulianBaader/red-pitaya-notes/tree/daq) in order to create a SD-Card with the correct image.
+* Connection via `ssh root@rp-f0c38f.local` password: `changeme`
+* Enable DHCP: Settings-> Network -> USB Ethernet -> IPv4 and IPv6 `shared to other computers`
 
-| Configuration               | HPGe                                     | NaI                                 |
-|-----------------------------|------------------------------------------|-------------------------------------|
-| Pre-Amplifier               | $2.6\mathrm{kV}$                         | 0.94                                |
-| Amplifier                   | Ortec Model 410 Linear Amplifier         | Ortec Model 410 Multimode Amplifier |
-| Kernforschung Nr.           | 44 140-70                                | 0500 66                             |
-| Input Polarity              | Pos                                      | Neg                                 |
-| Input Attenuator            | 1                                        | 1                                   |
-| Fine Gain                   | 1.7                                      | 2.5                                 |
-| Coarse Gain                 | 1                                        | 1                                   |
-| Integration                 | 2                                        | 5                                   |
-| 1st Differentiation (Outer) | 1                                        | 1                                   |
-| 2nd Differentiation (Inner) | Out                                      | D.L. (Delay Line)                   |
-| Output                      | Unipolar Output ($Z_0 \approx 10\Omega$) | Unipolar Output                     |
-| Red Pitaya Connection       | Ch1 $50\Omega$                           | Ch2 $50\Omega$                      |
+
+TODO USB ethernet an und ipv4 und ipv6 shared to other computers
+maybe disable ethernet??
+### Physical Setup (16.12.2024)
+* HPGe Detector 
+    * -> High Voltage Supply (Kernforschung Nr. 62 848-72):
+        * 3kV
+        * Ramp Slope: 25V/Sec
+        * Ouput Level: 10;0
+        * Switch (Int/External Programming): Int
+        * Switch (On/Off): On
+        * Range: 0-3000
+        * Ouput: Not connected
+        * Preamp Supply: Not connected
+        * (Back) Output H.V. connected to the Detector
+    * -> One output (might be used with the oscilloscope for debugging)
+    * -> One output to the Model 451 Spectroscopy Amplifier (Kernforschung Nr. 37 239-70)
+        * Fine gain: ???
+        * Coarse Gain: 100
+        * Left Switch (Pos/Neg): Pos
+        * Right Swich (Pos/Neg): Pos
+        * Input: Connected to HPGe detector
+        * Unipolar Output: Connected to RedPitaya (IN1)
+        * Bipolar Output: (might be used with the oscilloscope for debugging)
+
+* NaI Detector
+    * -> Powersupply:
+        * 1.09
+        * Output connected to
+    * -> Ortec Model 452 Spectroscopy Amplifier (Kernforschung Nr. 59 747-72)
+        * Coarse Gain: 5
+        * Fine Gain: 5;0
+        * Shaping Time: 2.0
+        * Output Range: +10V
+        * Left Switch (Pos/Neg): Neg
+        * Right Switch BLR (HI/LO/OUT) OUT
+
+* RedPitaya
+    * Running the DAQ Server
+    * Ethernet connected to PC via Ethernet-USB-Dongle
+
+
+
 
 
 ### Software
-* ?? Is python11 enviroment still required??
-* Install mimoCoRB &rarr; what release
-* Install packages &rarr; test what packages are required; kafe2 and PhyPraKit should suffice
+* Conda enviroment with python 11
+* [mimoCoRB package](https://github.com/GuenterQuast/mimoCoRB) (64fc7826f13a1f00801dd0bddc1368cd67c8dc4f)
+* [red-pitaya-notes](https://github.com/pavel-demin/red-pitaya-notes)
+* This package
 
 ## The main.py script
-* The ```main.py``` script creates a mimoCoRB setup and runs the mimoCoRB DAQ system.  
+* The `main.py` script creates a mimoCoRB setup and runs the mimoCoRB DAQ system.  
 * The setup can be configured in three ways:
     * Input, whether the input data should be taken from the redpitaya or a tar source
     * Ouput, whether the data should be analyzed into a spectrum, a coincidence analysis or the raw pulses are to be saved
     * Trigger, on which channel the trigger is set. This is only relevant for the spectrum and the redpitaya.
+
+
+# Debugging
+`socket.gaierror: [Errno -2] Name or service not known`
+* The connection to the RedPitaya could not be established. Check if the connection is
+
+`TimeoutError: timed out`
+* The RedPitaya did not receive a trigger signal on the specified channel for more than one second.
+* To investigate the Problem:
+    * Make sure both the detectors are connected correctly and have power
+    * Check with an external Oscilloscope
+    * Use the `mcpha.py` application from `git/red-pitaya-notes/projects/mcpha/client`
