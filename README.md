@@ -44,10 +44,9 @@ This is the repository for the gamma-coincidence-experiment at KIT
 
 
 ### Software
-* Conda enviroment with python 11
-* [mimoCoRB package](https://github.com/GuenterQuast/mimoCoRB) (64fc7826f13a1f00801dd0bddc1368cd67c8dc4f)
-* [red-pitaya-notes](https://github.com/pavel-demin/red-pitaya-notes)
-* This package
+* Setup the RedPitaya following this [Guide](RedPitaya/README.md)
+* Install [mimoCoRB](mimoCoRB/README.md)
+
 
 ## The main.py script
 * The `main.py` script creates a mimoCoRB setup and runs the mimoCoRB DAQ system.  
